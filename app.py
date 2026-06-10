@@ -11,7 +11,7 @@ st.set_page_config(
 
 # App Title & Description
 st.title("🎓 EduAgent-IQ")
-st.markdown("### Smart Study, Zero Hallucinations: An AI Reasoning Agent for Cited Q&A and Instant Quizzes.")
+st.markdown("### "Smart Study with AI Reasoning, Concept Comparison, Study Notes, and Instant Quizzes.")
 st.write("Welcome! This AI agent uses advanced reasoning to answer your study questions with precise citations and generate instant quizzes to test your knowledge.")
 
 # Sidebar for API Key configuration
