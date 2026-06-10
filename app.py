@@ -32,7 +32,7 @@ answer_style = st.sidebar.selectbox(
 if api_key:
     genai.configure(api_key=api_key)
     # Model initialize karte waqt koi beta version na likhein
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-pro")
 
 learning_level = st.selectbox(
     "Select Learning Level",
