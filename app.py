@@ -26,7 +26,9 @@ else:
     st.info("Please enter your Gemini API Key in the sidebar to start.")
 
 # Tabs for features
-tab1, tab2 = st.tabs(["📚 Cited Q&A", "📝 Instant Quiz"])
+tab1, tab2, tab3 = st.tabs(
+["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts"]
+)
 
 with tab1:
     st.header("Ask Your Study Question")
@@ -67,4 +69,30 @@ with tab2:
                     st.markdown(quiz_response.text)
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
+with tab3:
+    st.header("Compare Two Concepts")
+
+    concept1 = st.text_input("First Concept")
+    concept2 = st.text_input("Second Concept")
+
+    if st.button("Compare Concepts"):
+        if not api_key:
+            st.error("Please provide an API Key first!")
+        elif not concept1 or not concept2:
+            st.warning("Enter both concepts.")
+        else:
+            compare_prompt = f"""
+            Compare {concept1} and {concept2}.
+
+            Include:
+            1. Definition
+            2. Key Differences
+            3. Advantages
+            4. Disadvantages
+            5. Which is better and when
+            """
+
+            response = model.generate_content(compare_prompt)
+
+            st.markdown(response.text)
                   
