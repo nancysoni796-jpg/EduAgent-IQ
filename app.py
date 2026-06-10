@@ -26,8 +26,8 @@ else:
     st.info("Please enter your Gemini API Key in the sidebar to start.")
 
 # Tabs for features
-tab1, tab2, tab3 = st.tabs(
-["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts"]
+tab1, tab2, tab3, tab4 = st.tabs(
+["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes"]
 )
 
 with tab1:
@@ -96,3 +96,32 @@ with tab3:
 
             st.markdown(response.text)
                   
+with tab4:
+    st.header("Generate Study Notes")
+
+    notes_topic = st.text_input(
+        "Enter Topic for Notes"
+    )
+
+    if st.button("Create Notes"):
+        if not api_key:
+            st.error("Please provide an API Key first!")
+        elif not notes_topic:
+            st.warning("Enter a topic.")
+        else:
+            notes_prompt = f"""
+            Create concise study notes on:
+            {notes_topic}
+
+            Include:
+            - Key Concepts
+            - Important Facts
+            - Quick Revision Points
+            - Summary
+            """
+
+            notes = model.generate_content(
+                notes_prompt
+            )
+
+            st.markdown(notes.text)
