@@ -24,7 +24,10 @@ if api_key:
     model = genai.GenerativeModel("gemini-2.5-flash")
 else:
     st.info("Please enter your Gemini API Key in the sidebar to start.")
-
+learning_level = st.selectbox(
+    "Select Learning Level",
+    ["School", "Intermediate", "College"]
+)
 # Tabs for features
 tab1, tab2, tab3, tab4 = st.tabs(
 ["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes"]
@@ -42,7 +45,16 @@ with tab1:
         else:
             with st.spinner("AI Agent is reasoning and searching for verified facts..."):
                 try:
-                    prompt = f"Provide a detailed, factually accurate answer with clear citations/sources for: {user_query}. Avoid any hallucinations."
+                    prompt = f"""
+Provide a detailed and factually accurate answer for a {learning_level} student.
+
+Question:
+{user_query}
+
+Explain according to the selected learning level.
+Use simple language for School level and more technical detail for College level.
+Include examples when helpful.
+"""
                     response = model.generate_content(prompt)
                     st.success("Analysis Complete!")
                     st.markdown("#### Verified Answer with Citations:")
