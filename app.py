@@ -30,12 +30,11 @@ answer_style = st.sidebar.selectbox(
     ["Simple", "Detailed", "Exam-Oriented"]
 )
 if api_key:
-    genai.configure(api_key=api_key,    transport='rest')
-model = genai.GenerativeModel("gemini-1.5-flash")
-
+    genai.configure(api_key=api_key, transport='rest')
+    model = genai.GenerativeModel("gemini-1.5-flash")
 else:
     st.error("API Key missing! Please add it in secrets.")
-    st.stop() # 
+    st.stop()
 learning_level = st.selectbox(
     "Select Learning Level",
     ["School", "Intermediate", "College"]
