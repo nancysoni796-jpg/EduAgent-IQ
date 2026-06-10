@@ -1,6 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
-import os
+from google import genai
 
 # Page configuration
 st.set_page_config(
@@ -9,165 +8,192 @@ st.set_page_config(
     layout="wide"
 )
 
-# App Title & Description
+# Title
 st.title("🎓 EduAgent-IQ")
-st.markdown("### Smart Study with AI Reasoning, Concept Comparison, Study Notes, and Instant Quizzes.")
-st.write("Welcome! This AI agent uses advanced reasoning to answer your study questions with precise citations and generate instant quizzes to test your knowledge.")
+st.markdown("### Smart Study AI Assistant for Q&A, Quizzes, Notes & Comparisons")
 
-# Sidebar for API Key configuration
+# API Key
+api_key = st.secrets.get("GEMINI_API_KEY", None)
+
+if not api_key:
+    st.error("❌ GEMINI_API_KEY missing in secrets.toml")
+    st.stop()
+
+# Gemini Client (NEW SDK)
+client = genai.Client(api_key=api_key)
+
+# Sidebar
 st.sidebar.header("EduAgent Settings")
-api_key = st.secrets["GEMINI_API_KEY"]
+
 learning_level = st.sidebar.selectbox(
     "Learning Level",
     ["School", "Intermediate", "College"]
 )
+
 subject = st.sidebar.selectbox(
     "Subject",
     ["Science", "Mathematics", "Computer Science", "English", "General Knowledge"]
 )
+
 answer_style = st.sidebar.selectbox(
     "Answer Style",
     ["Simple", "Detailed", "Exam-Oriented"]
 )
-if api_key:
-    genai.configure(api_key=api_key)
-    # Model initialize karte waqt koi beta version na likhein
-    model = genai.GenerativeModel("gemini-pro")
 
-learning_level = st.selectbox(
-    "Select Learning Level",
-    ["School", "Intermediate", "College"]
-)
+# Tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
-["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes", "🎯 Learning Tips"]
+    ["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes", "🎯 Learning Tips"]
 )
 
+# ================= TAB 1 =================
 with tab1:
     st.header("Ask Your Study Question")
-    user_query = st.text_area("Enter your question or paste your study material text here:", placeholder="e.g., Explain photosynthesis and provide sources/citations.")
-    
-    if st.button("Analyze & Answer"):
-        if not api_key:
-            st.error("Please provide an API Key first!")
-        elif not user_query:
+
+    user_query = st.text_area("Enter your question")
+
+    if st.button("Analyze & Answer", key="qa"):
+        if not user_query:
             st.warning("Please enter a question.")
         else:
-            with st.spinner("AI Agent is reasoning and searching for verified facts..."):
-                try:
-                    prompt = f"""
-Provide a detailed and factually accurate answer for a {learning_level} student.
+            try:
+                prompt = f"""
+You are a helpful teacher for {learning_level} students.
 
 Question:
 {user_query}
 
-Explain according to the selected learning level.
-Use simple language for School level and more technical detail for College level.
-Include examples when helpful.
+Explain in a {answer_style} style.
+Include examples if needed.
 """
-                    response = model.generate_content(prompt)
-                    st.success("Analysis Complete!")
-                    st.markdown("#### Verified Answer with Citations:")
-                    st.write(response.text)
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
 
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt
+                )
+
+                st.success("Answer Generated")
+                st.markdown(response.text)
+
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+
+# ================= TAB 2 =================
 with tab2:
-    st.header("Generate an Instant Quiz")
-    topic = st.text_input("Enter a topic or subject for the quiz:", placeholder="e.g., Indian Constitution, Basic Physics")
-    num_questions = st.slider("Number of questions:", min_value=3, max_value=10, value=5)
-    
-    if st.button("Generate Quiz"):
-        if not api_key:
-            st.error("Please provide an API Key first!")
-        elif not topic:
-            st.warning("Please enter a topic.")
+    st.header("Generate Quiz")
+
+    topic = st.text_input("Quiz Topic")
+    num_questions = st.slider("Number of questions", 3, 10, 5)
+
+    if st.button("Generate Quiz", key="quiz"):
+        if not topic:
+            st.warning("Enter topic")
         else:
-            with st.spinner("Creating your custom quiz..."):
-                try:
-                    quiz_prompt = f"Create a multiple-choice quiz with {num_questions} questions on the topic: {topic}. Include options (A, B, C, D) and provide the correct answers at the very end."
-                    quiz_response = model.generate_content(quiz_prompt)
-                    st.success("Quiz Generated successfully!")
-                    st.markdown(quiz_response.text)
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
+            try:
+                quiz_prompt = f"""
+Create a multiple-choice quiz on {topic}.
+Make {num_questions} questions.
+Include options A, B, C, D and answers at end.
+"""
+
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=quiz_prompt
+                )
+
+                st.markdown(response.text)
+
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+
+# ================= TAB 3 =================
 with tab3:
-    st.header("Compare Two Concepts")
+    st.header("Compare Concepts")
 
-    concept1 = st.text_input("First Concept")
-    concept2 = st.text_input("Second Concept")
+    c1 = st.text_input("First Concept")
+    c2 = st.text_input("Second Concept")
 
-    if st.button("Compare Concepts"):
-        if not api_key:
-            st.error("Please provide an API Key first!")
-        elif not concept1 or not concept2:
-            st.warning("Enter both concepts.")
+    if st.button("Compare", key="compare"):
+        if not c1 or not c2:
+            st.warning("Enter both concepts")
         else:
-            compare_prompt = f"""
-            Compare {concept1} and {concept2}.
+            try:
+                prompt = f"""
+Compare {c1} and {c2}:
+- Definition
+- Differences
+- Advantages
+- Disadvantages
+- Use cases
+"""
 
-            Include:
-            1. Definition
-            2. Key Differences
-            3. Advantages
-            4. Disadvantages
-            5. Which is better and when
-            """
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt
+                )
 
-            response = model.generate_content(compare_prompt)
+                st.markdown(response.text)
 
-            st.markdown(response.text)
-                  
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+
+# ================= TAB 4 =================
 with tab4:
-    st.header("Generate Study Notes")
+    st.header("Study Notes")
 
-    notes_topic = st.text_input(
-        "Enter Topic for Notes"
-    )
+    topic = st.text_input("Topic for Notes")
 
-    if st.button("Create Notes"):
-        if not api_key:
-            st.error("Please provide an API Key first!")
-        elif not notes_topic:
-            st.warning("Enter a topic.")
+    if st.button("Create Notes", key="notes"):
+        if not topic:
+            st.warning("Enter topic")
         else:
-            notes_prompt = f"""
-            Create concise study notes on:
-            {notes_topic}
+            try:
+                prompt = f"""
+Create short study notes on {topic}:
+- Key concepts
+- Important facts
+- Revision points
+- Summary
+"""
 
-            Include:
-            - Key Concepts
-            - Important Facts
-            - Quick Revision Points
-            - Summary
-            """
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt
+                )
 
-            notes = model.generate_content(
-                notes_prompt
-            )
+                st.markdown(response.text)
 
-            st.markdown(notes.text)
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+
+# ================= TAB 5 =================
 with tab5:
-    st.header("AI Learning Tips")
+    st.header("Learning Tips")
 
-    topic = st.text_input("Enter Topic for Learning Tips")
+    topic = st.text_input("Topic for tips")
 
-    if st.button("Get Learning Tips"):
-        if not api_key:
-            st.error("Please provide an API Key first!")
-        elif not topic:
-            st.warning("Enter a topic.")
+    if st.button("Get Tips", key="tips"):
+        if not topic:
+            st.warning("Enter topic")
         else:
-            tips_prompt = f"""
-            Give study tips for learning:
-            {topic}
+            try:
+                prompt = f"""
+Give study tips for {topic}:
+- Best learning method
+- Common mistakes
+- Revision strategy
+- Exam tips
+"""
 
-            Include:
-            - Best way to learn
-            - Common mistakes
-            - Revision strategy
-            - Exam preparation tips
-            """
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt
+                )
 
-            tips = model.generate_content(tips_prompt)
+                st.markdown(response.text)
 
-            st.markdown(tips.text)
+            except Exception as e:
+                st.error(f"Error: {e}")
