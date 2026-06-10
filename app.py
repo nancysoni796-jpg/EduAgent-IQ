@@ -16,14 +16,11 @@ st.write("Welcome! This AI agent uses advanced reasoning to answer your study qu
 
 # Sidebar for API Key configuration
 st.sidebar.header("Configuration")
-api_key = st.sidebar.text_input("Enter Gemini API Key:", type="password")
+api_key = st.secrets["GEMINI_API_KEY"]
 
 if api_key:
     genai.configure(api_key=api_key)
-    # Using gemini-2.5-flash as the standard fast reasoning model
-    model = genai.GenerativeModel("gemini-2.5-flash")
-else:
-    st.info("Please enter your Gemini API Key in the sidebar to start.")
+model = genai.GenerativeModel("gemini-2.5-flash")
 learning_level = st.selectbox(
     "Select Learning Level",
     ["School", "Intermediate", "College"]
