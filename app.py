@@ -28,9 +28,8 @@ learning_level = st.selectbox(
     "Select Learning Level",
     ["School", "Intermediate", "College"]
 )
-# Tabs for features
-tab1, tab2, tab3, tab4 = st.tabs(
-["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes"]
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+["📚 Cited Q&A", "📝 Instant Quiz", "⚖️ Compare Concepts", "📒 Study Notes", "🎯 Learning Tips"]
 )
 
 with tab1:
@@ -137,3 +136,28 @@ with tab4:
             )
 
             st.markdown(notes.text)
+with tab5:
+    st.header("AI Learning Tips")
+
+    topic = st.text_input("Enter Topic for Learning Tips")
+
+    if st.button("Get Learning Tips"):
+        if not api_key:
+            st.error("Please provide an API Key first!")
+        elif not topic:
+            st.warning("Enter a topic.")
+        else:
+            tips_prompt = f"""
+            Give study tips for learning:
+            {topic}
+
+            Include:
+            - Best way to learn
+            - Common mistakes
+            - Revision strategy
+            - Exam preparation tips
+            """
+
+            tips = model.generate_content(tips_prompt)
+
+            st.markdown(tips.text)
