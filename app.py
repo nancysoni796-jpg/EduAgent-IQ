@@ -30,7 +30,8 @@ answer_style = st.sidebar.selectbox(
     ["Simple", "Detailed", "Exam-Oriented"]
 )
 if api_key:
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
 model = genai.GenerativeModel("gemini-pro")
 learning_level = st.selectbox(
     "Select Learning Level",
