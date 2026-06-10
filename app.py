@@ -15,7 +15,7 @@ st.markdown("### Smart Study with AI Reasoning, Concept Comparison, Study Notes,
 st.write("Welcome! This AI agent uses advanced reasoning to answer your study questions with precise citations and generate instant quizzes to test your knowledge.")
 
 # Sidebar for API Key configuration
-st.sidebar.header("Configuration")
+st.sidebar.header("EduAgent Settings")
 api_key = st.secrets["GEMINI_API_KEY"]
 learning_level = st.sidebar.selectbox(
     "Learning Level",
