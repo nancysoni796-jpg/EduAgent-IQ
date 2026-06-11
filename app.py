@@ -45,58 +45,7 @@ if not st.session_state.user:
             else:
                 st.error("User already exists")
 
-
-# ================= DASHBOARD =================
-else:
-    st.sidebar.title(f"👋 Welcome {st.session_state.user}")
-
-    if st.sidebar.button("Logout"):
-        st.session_state.user = None
-        st.rerun()
-
-    menu = st.sidebar.selectbox(
-        "Choose Feature",
-        [
-            "AI Tutor",
-            "Quiz Generator",
-            "Notes Generator",
-            "Compare Concepts",
-            "Learning Tips",
-            "History"
-        ]
-    )
-
-    learning_level = st.sidebar.selectbox(
-        "Learning Level",
-        ["School", "Intermediate", "College"]
-    )
-
-    # ---------------- AI TUTOR ----------------
-    if menu == "AI Tutor":
-        st.header("🤖 AI Study Tutor")
-
-        question = st.text_area("Ask your question")
-
-        if st.button("Get Answer"):
-            if question.strip():
-                prompt = f"""
-Answer for a {learning_level} student.
-
-Question:
-{question}
-
-Explain clearly with examples.
-"""
-                answer = ask_ai(prompt)
-
-                db.save_chat(st.session_state.user, question, answer)
-
-                st.subheader("Answer")
-                st.write(answer)
-            else:
-                st.warning("Please enter a question")
-
-    # ---------------- QUIZ ----------------
+# ---------------- QUIZ ----------------
     elif menu == "Quiz Generator":
         st.header("📚 Quiz Generator")
 
