@@ -50,10 +50,10 @@ else:
     st.sidebar.title(f"👋 Welcome {st.session_state.user}")
 
     if st.sidebar.button("Logout"):
-        st.session_state.user = None
-        st.rerun()
+    st.session_state.user = None
+    st.rerun()
 
-    menu = st.sidebar.selectbox(
+menu = st.sidebar.selectbox(
     "Choose Feature",
     [
         "AI Tutor",
@@ -70,15 +70,15 @@ learning_level = st.sidebar.selectbox(
     ["School", "Intermediate", "College"]
 )
 
-    # ---------------- AI TUTOR ----------------
-    if menu == "AI Tutor":
-        st.header("🤖 AI Study Tutor")
+# ---------------- AI TUTOR ----------------
+if menu == "AI Tutor":
+    st.header("🤖 AI Study Tutor")
 
-        question = st.text_area("Ask your question")
+    question = st.text_area("Ask your question")
 
-        if st.button("Get Answer"):
-            if question.strip():
-                prompt = f"""
+    if st.button("Get Answer"):
+        if question.strip():
+            prompt = f"""
 Answer for a {learning_level} student.
 
 Question:
@@ -89,35 +89,35 @@ Explain clearly with examples.
 
 answer = ask_ai(prompt)
 
-                db.save_chat(st.session_state.user, question, answer)
+            db.save_chat(st.session_state.user, question, answer)
 
-                st.subheader("Answer")
-                st.write(answer)
-            else:
-                st.warning("Please enter a question")
+            st.subheader("Answer")
+            st.write(answer)
+        else:
+            st.warning("Please enter a question")
 
-    # ---------------- QUIZ ----------------
-    elif menu == "Quiz Generator":
-        st.header("📚 Quiz Generator")
+# ---------------- QUIZ ----------------
+elif menu == "Quiz Generator":
+    st.header("📚 Quiz Generator")
 
-        topic = st.text_input("Enter topic")
+    topic = st.text_input("Enter topic")
 
-        if st.button("Generate Quiz"):
-            if topic.strip():
-                prompt = f"Create 5 multiple choice questions on {topic} with answers."
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter a topic")
+    if st.button("Generate Quiz"):
+        if topic.strip():
+            prompt = f"Create 5 multiple choice questions on {topic} with answers."
+            st.write(ask_ai(prompt))
+        else:
+            st.warning("Enter a topic")
 
-    # ---------------- NOTES ----------------
-    elif menu == "Notes Generator":
-        st.header("📝 Notes Generator")
+# ---------------- NOTES ----------------
+elif menu == "Notes Generator":
+    st.header("📝 Notes Generator")
 
-        topic = st.text_input("Enter topic")
+    topic = st.text_input("Enter topic")
 
-        if st.button("Generate Notes"):
-            if topic.strip():
-                prompt = f"""
+    if st.button("Generate Notes"):
+        if topic.strip():
+            prompt = f"""
 Create simple study notes on {topic}:
 - Key points
 - Important facts
