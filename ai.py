@@ -1,16 +1,29 @@
 import streamlit as st
-from google import genai
-
-api_key = st.secrets["GEMINI_API_KEY"]
-
-st.write("API KEY LOADED:", bool(api_key))  # DEBUG LINE
-
-client = genai.Client(api_key=api_key)
+import requests
 
 def ask_ai(prompt):
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt
-    )
-    return response.text
- 
+    api_key = st.secrets["GEMINI_API_KEY"]
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": prompt}
+                ]
+            }
+        ]
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        result = response.json()
+        return result["candidates"][0]["content"]["parts"][0]["text"]
+    else:
+        return f"Error: {response.text}"
