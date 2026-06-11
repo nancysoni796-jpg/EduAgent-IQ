@@ -6,3 +6,6 @@ Smart Quiz Engine: Generates custom quizzes and provides instant evaluation/scor
 Concept Comparison: Side-by-side comparison of complex topics for better understanding.
 Optimized Accuracy: Enhanced prompt engineering to ensure verified, fact-focused responses.
 Goal: Providing students with a powerful reasoning agent for effective exam preparation and conceptual mastery.
+
+
+    "Due to high traffic on free API tiers, the live demo might be experiencing temporary connection issues. The core logic and features are fully implemented.".
