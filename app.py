@@ -46,10 +46,7 @@ if not st.session_state.user:
                 st.error("User already exists")
 
 # ================= DASHBOARD =================
-else:
-    st.sidebar.title(f"👋 Welcome {st.session_state.user}")
-
-    if st.sidebar.button("Logout"):
+if st.sidebar.button("Logout"):
     st.session_state.user = None
     st.rerun()
 
@@ -70,7 +67,6 @@ learning_level = st.sidebar.selectbox(
     ["School", "Intermediate", "College"]
 )
 
-# ---------------- AI TUTOR ----------------
 if menu == "AI Tutor":
     st.header("🤖 AI Study Tutor")
 
@@ -78,16 +74,8 @@ if menu == "AI Tutor":
 
     if st.button("Get Answer"):
         if question.strip():
-            prompt = f"""
-Answer for a {learning_level} student.
-
-Question:
-{question}
-
-Explain clearly with examples.
-"""
-
-answer = ask_ai(prompt)
+            prompt = f"Answer for a {learning_level} student.\n\nQuestion: {question}\n\nExplain clearly with examples."
+            answer = ask_ai(prompt)
 
             db.save_chat(st.session_state.user, question, answer)
 
@@ -96,7 +84,6 @@ answer = ask_ai(prompt)
         else:
             st.warning("Please enter a question")
 
-# ---------------- QUIZ ----------------
 elif menu == "Quiz Generator":
     st.header("📚 Quiz Generator")
 
@@ -109,7 +96,6 @@ elif menu == "Quiz Generator":
         else:
             st.warning("Enter a topic")
 
-# ---------------- NOTES ----------------
 elif menu == "Notes Generator":
     st.header("📝 Notes Generator")
 
@@ -117,72 +103,49 @@ elif menu == "Notes Generator":
 
     if st.button("Generate Notes"):
         if topic.strip():
-            prompt = f"""
-Create simple study notes on {topic}:
-- Key points
-- Important facts
-- Short summary
-"""
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter a topic")
+            prompt = f"Create simple study notes on {topic} with key points, important facts and a short summary."
+            st.write(ask_ai(prompt))
+        else:
+            st.warning("Enter a topic")
 
-    # ---------------- COMPARE CONCEPTS ----------------
 elif menu == "Compare Concepts":
     st.header("⚖️ Compare Concepts")
 
     concept1 = st.text_input("First Concept")
-  concept2 = st.text_input("Second Concept")
+    concept2 = st.text_input("Second Concept")
 
-  if st.button("Compare"):
-      if concept1 and concept2:
-          prompt = f"""
-Compare {concept1} and {concept2}
-
-Include:
-- Definition
-- Key Differences
-- Advantages
-- Disadvantages
-- Which is better and when
-"""
+    if st.button("Compare"):
+        if concept1 and concept2:
+            prompt = f"Compare {concept1} and {concept2}. Include definition, key differences, advantages, disadvantages and which is better in different situations."
             st.write(ask_ai(prompt))
         else:
             st.warning("Enter both concepts")
 
-
-# ---------------- LEARNING TIPS ----------------
 elif menu == "Learning Tips":
     st.header("🎯 Learning Tips")
 
     topic = st.text_input("Enter Topic")
 
-  if st.button("Get Tips"):
-      if topic:
-          prompt = f"""
-Give study tips for learning {topic}
-
-Include:
-- Best learning strategy
-- Common mistakes
-- Revision plan
-- Exam preparation tips
-"""
+    if st.button("Get Tips"):
+        if topic:
+            prompt = f"Give study tips for learning {topic}. Include best learning strategy, common mistakes, revision plan and exam preparation tips."
             st.write(ask_ai(prompt))
         else:
             st.warning("Enter a topic")
-        st.header("📊 Your Chat History")
 
-        chats = db.get_chats(st.session_state.user)
+elif menu == "History":
+    st.header("📊 Your Chat History")
 
-  if chats:
-      for q, a in chats:
-          st.markdown("### ❓ Question")
-          st.write(q)
+    chats = db.get_chats(st.session_state.user)
 
-          st.markdown("### 💡 Answer")
-          st.write(a)
+    if chats:
+        for q, a in chats:
+            st.markdown("### ❓ Question")
+            st.write(q)
 
-          st.divider()
-  else:
-      st.info("No history found yet")
+            st.markdown("### 💡 Answer")
+            st.write(a)
+
+            st.divider()
+    else:
+        st.info("No history found yet")
