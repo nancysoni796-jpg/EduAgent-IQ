@@ -27,3 +27,4 @@ def ask_ai(prompt):
 
     except Exception as e:
         return f"Error: {str(e)}"
+
