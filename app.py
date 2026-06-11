@@ -70,29 +70,6 @@ else:
         "Learning Level",
         ["School", "Intermediate", "College"]
     )
-else:
-    st.sidebar.title(f"👋 Welcome {st.session_state.user}")
-
-    if st.sidebar.button("Logout"):
-        st.session_state.user = None
-        st.rerun()
-
-    menu = st.sidebar.selectbox(
-        "Choose Feature",
-        [
-            "AI Tutor",
-            "Quiz Generator",
-            "Notes Generator",
-            "Compare Concepts",
-            "Learning Tips",
-            "History"
-        ]
-    )
-
-    learning_level = st.sidebar.selectbox(
-        "Learning Level",
-        ["School", "Intermediate", "College"]
-    )
     if menu == "AI Tutor":
     st.header("🤖 AI Study Tutor")
 
