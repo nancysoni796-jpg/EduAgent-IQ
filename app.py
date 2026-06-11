@@ -54,9 +54,21 @@ else:
         st.rerun()
 
     menu = st.sidebar.selectbox(
-        "Choose Feature",
-        ["AI Tutor", "Quiz Generator", "Notes Generator", "History"]
-    )
+    "Choose Feature",
+    [
+        "AI Tutor",
+        "Quiz Generator",
+        "Notes Generator",
+        "Compare Concepts",
+        "Learning Tips",
+        "History"
+    ]
+)
+
+learning_level = st.sidebar.selectbox(
+    "Learning Level",
+    ["School", "Intermediate", "College"]
+)
 
     # ---------------- AI TUTOR ----------------
     if menu == "AI Tutor":
@@ -66,7 +78,16 @@ else:
 
         if st.button("Get Answer"):
             if question.strip():
-                answer = ask_ai(question)
+                prompt = f"""
+Answer for a {learning_level} student.
+
+Question:
+{question}
+
+Explain clearly with examples.
+"""
+
+answer = ask_ai(prompt)
 
                 db.save_chat(st.session_state.user, question, answer)
 
