@@ -52,26 +52,23 @@ else:
         st.session_state.user = None
         st.rerun()
 
-    st.title("🎓 EduAgent AI Learning Hub")
-
-    learning_level = st.selectbox(
-        "📚 Select Learning Level",
+    learning_level = st.sidebar.selectbox(
+        "📚 Learning Level",
         ["School", "Intermediate", "College"]
     )
 
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    st.title("🎓 EduAgent AI Learning Hub")
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🤖 AI Tutor",
         "📚 Quiz",
         "📝 Notes",
         "⚖️ Compare",
-        "🎯 Tips",
-        "📊 History"
+        "🎯 Tips"
     ])
 
-    # ---------- AI TUTOR ----------
+    # ================= AI TUTOR =================
     with tab1:
-        st.header("🤖 AI Study Tutor")
-
         question = st.text_area("Ask your question")
 
         if st.button("Get Answer"):
@@ -97,10 +94,8 @@ Explain clearly with examples.
                 st.subheader("Answer")
                 st.write(answer)
 
-    # ---------- QUIZ ----------
+    # ================= QUIZ =================
     with tab2:
-        st.header("📚 Quiz Generator")
-
         topic = st.text_input("Quiz Topic")
 
         if st.button("Generate Quiz"):
@@ -111,15 +106,13 @@ Create 5 multiple choice questions on {topic}.
 
 Include:
 - 4 options
-- Correct answer
+- Correct Answer
 """
 
                 st.write(ask_ai(prompt))
 
-    # ---------- NOTES ----------
+    # ================= NOTES =================
     with tab3:
-        st.header("📝 Notes Generator")
-
         topic = st.text_input("Notes Topic")
 
         if st.button("Generate Notes"):
@@ -136,10 +129,8 @@ Include:
 
                 st.write(ask_ai(prompt))
 
-    # ---------- COMPARE ----------
+    # ================= COMPARE =================
     with tab4:
-        st.header("⚖️ Compare Concepts")
-
         concept1 = st.text_input("First Concept")
         concept2 = st.text_input("Second Concept")
 
@@ -159,10 +150,8 @@ Include:
 
                 st.write(ask_ai(prompt))
 
-    # ---------- LEARNING TIPS ----------
+    # ================= LEARNING TIPS =================
     with tab5:
-        st.header("🎯 Learning Tips")
-
         topic = st.text_input("Topic for Tips")
 
         if st.button("Get Learning Tips"):
@@ -180,23 +169,13 @@ Include:
 
                 st.write(ask_ai(prompt))
 
-    # ---------- HISTORY ----------
-    with tab6:
-        st.header("📊 Chat History")
+    # ================= HISTORY IN SIDEBAR =================
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("📊 Recent History")
 
-        chats = db.get_chats(st.session_state.user)
+    chats = db.get_chats(st.session_state.user)
 
-        if chats:
-            for q, a in chats:
-                st.markdown("### ❓ Question")
-                st.write(q)
-
-                st.markdown("### 💡 Answer")
-                st.write(a)
-
-                st.divider()
-        else:
-            st.info("No history found yet")
-
-
+    if chats:
+        for q, a in chats[:5]:
+            st.sidebar.write("❓", q[:30] + "...")
     
