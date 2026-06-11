@@ -2,28 +2,28 @@ import streamlit as st
 import requests
 
 def ask_ai(prompt):
-    api_key = st.secrets["GEMINI_API_KEY"]
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
 
-    headers = {
-        "Content-Type": "application/json"
-    }
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ]
+        }
 
-    data = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": prompt}
-                ]
-            }
-        ]
-    }
+        response = requests.post(url, json=payload)
 
-    response = requests.post(url, headers=headers, json=data)
+        if response.status_code == 200:
+            data = response.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            return f"API Error: {response.text}"
 
-    if response.status_code == 200:
-        result = response.json()
-        return result["candidates"][0]["content"]["parts"][0]["text"]
-    else:
-        return f"Error: {response.text}"
+    except Exception as e:
+        return f"Error: {str(e)}"
