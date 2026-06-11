@@ -127,8 +127,50 @@ Create simple study notes on {topic}:
             else:
                 st.warning("Enter a topic")
 
-    # ---------------- HISTORY ----------------
-    elif menu == "History":
+    # ---------------- COMPARE CONCEPTS ----------------
+elif menu == "Compare Concepts":
+    st.header("⚖️ Compare Concepts")
+
+    concept1 = st.text_input("First Concept")
+    concept2 = st.text_input("Second Concept")
+
+    if st.button("Compare"):
+        if concept1 and concept2:
+            prompt = f"""
+Compare {concept1} and {concept2}
+
+Include:
+- Definition
+- Key Differences
+- Advantages
+- Disadvantages
+- Which is better and when
+"""
+            st.write(ask_ai(prompt))
+        else:
+            st.warning("Enter both concepts")
+
+
+# ---------------- LEARNING TIPS ----------------
+elif menu == "Learning Tips":
+    st.header("🎯 Learning Tips")
+
+    topic = st.text_input("Enter Topic")
+
+    if st.button("Get Tips"):
+        if topic:
+            prompt = f"""
+Give study tips for learning {topic}
+
+Include:
+- Best learning strategy
+- Common mistakes
+- Revision plan
+- Exam preparation tips
+"""
+            st.write(ask_ai(prompt))
+        else:
+            st.warning("Enter a topic")
         st.header("📊 Your Chat History")
 
         chats = db.get_chats(st.session_state.user)
