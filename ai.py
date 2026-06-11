@@ -13,3 +13,4 @@ def ask_ai(prompt):
         contents=prompt
     )
     return response.text
+ 
