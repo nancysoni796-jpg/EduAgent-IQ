@@ -45,27 +45,31 @@ if not st.session_state.user:
             else:
                 st.error("User already exists")
 
+
 # ================= DASHBOARD =================
-if st.sidebar.button("Logout"):
-    st.session_state.user = None
-    st.rerun()
+else:
+    st.sidebar.title(f"👋 Welcome {st.session_state.user}")
 
-menu = st.sidebar.selectbox(
-    "Choose Feature",
-    [
-        "AI Tutor",
-        "Quiz Generator",
-        "Notes Generator",
-        "Compare Concepts",
-        "Learning Tips",
-        "History"
-    ]
-)
+    if st.sidebar.button("Logout"):
+        st.session_state.user = None
+        st.rerun()
 
-learning_level = st.sidebar.selectbox(
-    "Learning Level",
-    ["School", "Intermediate", "College"]
-)
+    menu = st.sidebar.selectbox(
+        "Choose Feature",
+        [
+            "AI Tutor",
+            "Quiz Generator",
+            "Notes Generator",
+            "Compare Concepts",
+            "Learning Tips",
+            "History"
+        ]
+    )
+
+    learning_level = st.sidebar.selectbox(
+        "Learning Level",
+        ["School", "Intermediate", "College"]
+    )
 
 if menu == "AI Tutor":
     st.header("🤖 AI Study Tutor")
