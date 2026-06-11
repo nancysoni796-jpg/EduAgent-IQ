@@ -7,6 +7,7 @@ from ai import ask_ai
 db = Database()
 
 st.set_page_config(page_title="EduAgent SaaS", layout="wide")
+st.write(st.secrets["GEMINI_API_KEY"][:10])
 
 # ---------------- SESSION ----------------
 if "user" not in st.session_state:
