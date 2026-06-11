@@ -1,7 +1,9 @@
+import streamlit as st
 from google import genai
-import os
 
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = st.secrets["GEMINI_API_KEY"]
+
+st.write("API KEY LOADED:", bool(api_key))  # DEBUG LINE
 
 client = genai.Client(api_key=api_key)
 
