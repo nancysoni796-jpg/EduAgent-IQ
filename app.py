@@ -44,85 +44,145 @@ if not st.session_state.user:
                 st.success("Account created successfully")
             else:
                 st.error("User already exists")
+# ================= DASHBOARD =================
+else:
+    st.sidebar.title(f"👋 Welcome {st.session_state.user}")
 
-# ---------------- QUIZ ----------------
-    elif menu == "Quiz Generator":
+    if st.sidebar.button("Logout"):
+        st.session_state.user = None
+        st.rerun()
+
+    st.title("🎓 EduAgent AI Learning Hub")
+
+    learning_level = st.selectbox(
+        "📚 Select Learning Level",
+        ["School", "Intermediate", "College"]
+    )
+
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "🤖 AI Tutor",
+        "📚 Quiz",
+        "📝 Notes",
+        "⚖️ Compare",
+        "🎯 Tips",
+        "📊 History"
+    ])
+
+    # ---------- AI TUTOR ----------
+    with tab1:
+        st.header("🤖 AI Study Tutor")
+
+        question = st.text_area("Ask your question")
+
+        if st.button("Get Answer"):
+            if question.strip():
+
+                prompt = f"""
+Answer for a {learning_level} student.
+
+Question:
+{question}
+
+Explain clearly with examples.
+"""
+
+                answer = ask_ai(prompt)
+
+                db.save_chat(
+                    st.session_state.user,
+                    question,
+                    answer
+                )
+
+                st.subheader("Answer")
+                st.write(answer)
+
+    # ---------- QUIZ ----------
+    with tab2:
         st.header("📚 Quiz Generator")
 
-        topic = st.text_input("Enter topic")
+        topic = st.text_input("Quiz Topic")
 
         if st.button("Generate Quiz"):
-            if topic.strip():
-                prompt = f"Create 5 multiple choice questions on {topic} with answers."
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter a topic")
+            if topic:
 
-    # ---------------- NOTES ----------------
-    elif menu == "Notes Generator":
+                prompt = f"""
+Create 5 multiple choice questions on {topic}.
+
+Include:
+- 4 options
+- Correct answer
+"""
+
+                st.write(ask_ai(prompt))
+
+    # ---------- NOTES ----------
+    with tab3:
         st.header("📝 Notes Generator")
 
-        topic = st.text_input("Enter topic")
+        topic = st.text_input("Notes Topic")
 
         if st.button("Generate Notes"):
-            if topic.strip():
-                prompt = f"""
-Create simple study notes on {topic}:
-- Key points
-- Important facts
-- Short summary
-"""
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter a topic")
+            if topic:
 
-    # ---------------- COMPARE CONCEPTS ----------------
-    elif menu == "Compare Concepts":
+                prompt = f"""
+Create study notes on {topic}
+
+Include:
+- Key Points
+- Important Facts
+- Summary
+"""
+
+                st.write(ask_ai(prompt))
+
+    # ---------- COMPARE ----------
+    with tab4:
         st.header("⚖️ Compare Concepts")
 
         concept1 = st.text_input("First Concept")
         concept2 = st.text_input("Second Concept")
 
-        if st.button("Compare"):
+        if st.button("Compare Concepts"):
             if concept1 and concept2:
+
                 prompt = f"""
 Compare {concept1} and {concept2}
 
 Include:
 - Definition
-- Key Differences
+- Differences
 - Advantages
 - Disadvantages
-- Which is better and when
+- Best Use Cases
 """
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter both concepts")
 
-    # ---------------- LEARNING TIPS ----------------
-    elif menu == "Learning Tips":
+                st.write(ask_ai(prompt))
+
+    # ---------- LEARNING TIPS ----------
+    with tab5:
         st.header("🎯 Learning Tips")
 
-        topic = st.text_input("Enter Topic")
+        topic = st.text_input("Topic for Tips")
 
-        if st.button("Get Tips"):
+        if st.button("Get Learning Tips"):
             if topic:
+
                 prompt = f"""
-Give study tips for learning {topic}
+Give learning tips for {topic}
 
 Include:
-- Best learning strategy
-- Common mistakes
-- Revision plan
-- Exam preparation tips
+- Study Strategy
+- Common Mistakes
+- Revision Plan
+- Exam Tips
 """
-                st.write(ask_ai(prompt))
-            else:
-                st.warning("Enter a topic")
 
-    # ---------------- HISTORY ----------------
-    elif menu == "History":
-        st.header("📊 Your Chat History")
+                st.write(ask_ai(prompt))
+
+    # ---------- HISTORY ----------
+    with tab6:
+        st.header("📊 Chat History")
 
         chats = db.get_chats(st.session_state.user)
 
@@ -138,3 +198,5 @@ Include:
         else:
             st.info("No history found yet")
 
+
+    
