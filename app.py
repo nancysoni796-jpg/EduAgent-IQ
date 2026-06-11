@@ -132,11 +132,11 @@ elif menu == "Compare Concepts":
     st.header("⚖️ Compare Concepts")
 
     concept1 = st.text_input("First Concept")
-    concept2 = st.text_input("Second Concept")
+  concept2 = st.text_input("Second Concept")
 
-    if st.button("Compare"):
-        if concept1 and concept2:
-            prompt = f"""
+  if st.button("Compare"):
+      if concept1 and concept2:
+          prompt = f"""
 Compare {concept1} and {concept2}
 
 Include:
@@ -157,9 +157,9 @@ elif menu == "Learning Tips":
 
     topic = st.text_input("Enter Topic")
 
-    if st.button("Get Tips"):
-        if topic:
-            prompt = f"""
+  if st.button("Get Tips"):
+      if topic:
+          prompt = f"""
 Give study tips for learning {topic}
 
 Include:
@@ -175,14 +175,14 @@ Include:
 
         chats = db.get_chats(st.session_state.user)
 
-        if chats:
-            for q, a in chats:
-                st.markdown("### ❓ Question")
-                st.write(q)
+  if chats:
+      for q, a in chats:
+          st.markdown("### ❓ Question")
+          st.write(q)
 
-                st.markdown("### 💡 Answer")
-                st.write(a)
+          st.markdown("### 💡 Answer")
+          st.write(a)
 
-                st.divider()
-        else:
-            st.info("No history found yet")
+          st.divider()
+  else:
+      st.info("No history found yet")
